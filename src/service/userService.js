@@ -9,19 +9,24 @@ const hashUserPassword = (userPassword) => {
   return hashPassword;
 };
 
-const createNewUser = (email, password, username) => {
+const createNewUser = async (email, password, username) => {
   let hashPass = hashUserPassword(password);
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    database: "jwtUser",
+    Promise: bluebird,
+  });
 
-  connection.query(
-    `INSERT INTO users (email, password, username) VALUES (?,?,?)`,
-    [email, hashPass, username],
-    function (err, results, fields) {
-      if (err) {
-        console.error(err);
-      }
-      console.log(results); // results contains rows returned by server
-    }
-  );
+  try {
+    const [rows, fields] = await connection.execute(
+      `INSERT INTO users (email, password, username) VALUES (?,?,?)`,
+      [email, hashPass, username]
+    );
+    return rows;
+  } catch (error) {
+    console.log(">>> check error: ", error);
+  }
 };
 
 const getUserList = async () => {
@@ -32,19 +37,27 @@ const getUserList = async () => {
     Promise: bluebird,
   });
 
-  let users = [];
-  // connection.query(`select * from users`, function (err, results, fields) {
-  //   if (err) {
-  //     console.error(err);
-  //     return users;
-  //   }
-  //   users = results;
-  //   console.log(">>> run get user list: ", users);
-  //   return users;
-  // });
-
   try {
     const [rows, fields] = await connection.execute("select * from users");
+    return rows;
+  } catch (error) {
+    console.log(">>> check error: ", error);
+  }
+};
+
+const deleteUser = async (id) => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    database: "jwtUser",
+    Promise: bluebird,
+  });
+
+  try {
+    const [rows, fields] = await connection.execute(
+      "DELETE FROM users WHERE id=?",
+      [id]
+    );
     return rows;
   } catch (error) {
     console.log(">>> check error: ", error);
@@ -54,4 +67,5 @@ const getUserList = async () => {
 module.exports = {
   createNewUser,
   getUserList,
+  deleteUser,
 };
