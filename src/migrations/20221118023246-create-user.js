@@ -7,6 +7,8 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
+        createAt: new Date(),
+        updateAt: new Date(),
       },
       email: {
         type: Sequelize.STRING,
@@ -16,6 +18,15 @@ module.exports = {
       },
       username: {
         type: Sequelize.STRING,
+      },
+
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
       },
     });
   },
