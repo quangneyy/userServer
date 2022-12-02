@@ -102,7 +102,7 @@ const handleUserLogin = async (rawData) => {
       rawData.password
     );
     return {
-      EM: "Your email.phone number or password is incorrect!",
+      EM: "Your email/phone number or password is incorrect!",
       EC: 1,
       DT: "",
     };
